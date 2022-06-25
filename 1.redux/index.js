@@ -4,10 +4,21 @@ const reducer = (prevState, action) => {
   switch (action.type) {
     case "CHANGE_COMP_A":
       return {
+        ...prevState,
         compA: action.data,
-        compB: 12,
-        compC: null,
       };
+    case "CHANGE_COMP_B":
+      return {
+        ...prevState,
+        compA: action.data,
+      };
+    case "CHANGE_COMP_C":
+      return {
+        ...prevState,
+        compA: action.data,
+      };
+    default:
+      return prevState;
   }
 };
 
@@ -17,14 +28,10 @@ const initialState = {
   comC: null,
 };
 
-const nextState = {
-  ...initialState,
-  compA: action.data,
-};
-
 const store = createStore(reducer, initialState);
-
-console.log(store.getState());
+store.subscribe(() => {
+  console.log("changed");
+});
 
 // action
 const changeCompA = (data) => {
@@ -35,4 +42,6 @@ const changeCompA = (data) => {
   };
 };
 
+console.log(store.getState());
 store.dispatch(changeCompA("b"));
+console.log(store.getState());
