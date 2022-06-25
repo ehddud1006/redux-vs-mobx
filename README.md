@@ -1,5 +1,6 @@
 # redux-vs-mobx
 
+### 중복제거
 ```javascript
 const initialState = {
   compA: "a",
