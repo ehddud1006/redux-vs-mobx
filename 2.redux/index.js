@@ -1,6 +1,6 @@
 const { createStore, compose, applyMiddleware } = require("redux");
 const reducer = require("./reducers/reducer");
-const { login, logout } = require("./actions/user");
+const { login, logout, logIn } = require("./actions/user");
 const { addPost } = require("./actions/post");
 const initialState = {
   user: {
@@ -31,10 +31,18 @@ const firstMiddleware = (store) => (dispatch) => (action) => {
   dispatch(action); //기본기능
 
   //dispatch 한 후
-  console.log("액션끝", action);
+  //   console.log("액션끝", action);
 };
 
-const enhancer = compose(applyMiddleware(firstMiddleware));
+const thunkMiddleware = (store) => (dispatch) => (action) => {
+  if (typeof action === "function") {
+    //비동기
+    return action(store.dispatch, store.getState);
+  }
+  return dispatch(action); // 리턴은 있어도 되고 없어도 된다.
+};
+
+const enhancer = compose(applyMiddleware(firstMiddleware, thunkMiddleware));
 
 const store = createStore(reducer, initialState, enhancer);
 store.subscribe(() => {
@@ -44,7 +52,7 @@ store.subscribe(() => {
 console.log("1th", store.getState());
 
 store.dispatch(
-  login({
+  logIn({
     id: 1,
     name: "zerocho",
     admin: true,
@@ -53,26 +61,26 @@ store.dispatch(
 
 console.log("2nd", store.getState());
 
-store.dispatch(
-  addPost({
-    userId: 1,
-    id: 1,
-    content: "안녕하세요. 리덕스",
-  })
-);
+// store.dispatch(
+//   addPost({
+//     userId: 1,
+//     id: 1,
+//     content: "안녕하세요. 리덕스",
+//   })
+// );
 
-console.log("3rd", store.getState());
+// console.log("3rd", store.getState());
 
-store.dispatch(
-  addPost({
-    userId: 1,
-    id: 2,
-    content: "안녕하세요. 리덕스",
-  })
-);
+// store.dispatch(
+//   addPost({
+//     userId: 1,
+//     id: 2,
+//     content: "안녕하세요. 리덕스",
+//   })
+// );
 
-console.log("4th", store.getState());
+// console.log("4th", store.getState());
 
-store.dispatch(logout());
+// store.dispatch(logout());
 
-console.log("5th", store.getState());
+// console.log("5th", store.getState());
